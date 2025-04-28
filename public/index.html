@@ -21,7 +21,7 @@
       // Initialize Socket.IO client
       const socket = React.useRef(null);
       React.useEffect(() => {
-        socket.current = io('http://localhost:3000');
+        socket.current = io('https://gsm7-af8eea1e8487.herokuapp.com/');
         
         socket.current.on('display', (normalizedText) => {
           setOutputText(normalizedText);
