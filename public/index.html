@@ -20,17 +20,18 @@
 
       // Initialize Socket.IO client
       const socket = React.useRef(null);
-      React.useEffect(() => {
-        socket.current = io('http://localhost:3000');
-        
-        socket.current.on('display', (normalizedText) => {
-          setOutputText(normalizedText);
-        });
+React.useEffect(() => {
+  const socketUrl = window.location.hostname === 'localhost' ? 'http://localhost:3000' : 'https://sms-encoder.onrender.com';
+  socket.current = io(socketUrl);
 
-        return () => {
-          socket.current.disconnect();
-        };
-      }, []);
+  socket.current.on('display', (normalizedText) => {
+    setOutputText(normalizedText);
+  });
+
+  return () => {
+    socket.current.disconnect();
+  };
+}, []);
 
       // Handle input change and emit to server
       const handleInputChange = (e) => {

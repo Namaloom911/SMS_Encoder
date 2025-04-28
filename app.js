@@ -2,6 +2,8 @@ const express = require('express');
 const app = express();
 const http = require('http').createServer(app);
 const io = require('socket.io')(http);
+const cors = require('cors');
+app.use(cors());  // Allow all origins (or specify your frontend URL for extra security)
 app.use(express.static(__dirname + '/public'));
 const port = process.env.PORT || 3000;
 
@@ -25,6 +27,10 @@ app.get('/', (req, res) => {
 
 io.on('connection', (socket) => {
   console.log('a user connected');
+
+  socket.on('error', (error) => {
+    console.log('Socket.io error:', error);
+  });
 
   socket.on('typing', (text) => {
     const normalizedText = normalizeText(text);
