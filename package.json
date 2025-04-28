@@ -4,7 +4,7 @@
   "description": "Convert text to GSM-7 encoding with special character replacements",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app.js"
   },
   "author": "M Ghanam",
   "license": "MIT",
