@@ -20,22 +20,27 @@ function normalizeText(text) {
 }
 
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/public/index.html');
+    res.sendFile(__dirname + '/public/index.html');
 });
 
 io.on('connection', (socket) => {
-  console.log('a user connected');
+    console.log('a user connected');
 
-  socket.on('typing', (text) => {
-    const normalizedText = normalizeText(text);
-    io.emit('display', normalizedText);
-  });
+    // Assign the user to a unique room based on their socket ID
+    const userRoom = socket.id;
+    socket.join(userRoom);
 
-  socket.on('disconnect', () => {
-    console.log('user disconnected');
-  });
+    socket.on('typing', (text) => {
+        const normalizedText = normalizeText(text);
+        // Emit the 'display' event only to the user's own room
+        io.to(userRoom).emit('display', normalizedText);
+    });
+
+    socket.on('disconnect', () => {
+        console.log('user disconnected');
+    });
 });
 
 http.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
+    console.log(`Server running at http://localhost:${port}`);
 });
