@@ -47,8 +47,9 @@ Install required Node.js packages:npm install express socket.io
 Verify File Structure:Ensure the directory looks like this:
 text-optimizer/
 ├── app.js
-├── public/index.html
-├── public/styles.css
+├── public/
+│   ├── index.html
+│   ├── styles.css
 ├── package.json
 ├── node_modules/
 
@@ -121,8 +122,8 @@ Verify app.js is running and shows “a user connected” in the terminal.
 
 Styles Not Applied:
 
-Ensure styles.css is in the project directory and served correctly (http://localhost:3000/styles.css should load CSS).
-Confirm app.js includes app.use(express.static(__dirname)) before routes.
+Ensure styles.css is in the public/ directory and served correctly (http://localhost:3000/styles.css should load CSS).
+Confirm app.js includes app.use(express.static(__dirname + '/public')) before routes.
 
 
 No Real-Time Updates:
@@ -154,6 +155,25 @@ Push to the branch (git push origin feature-name).
 Open a pull request.
 
 License
-This project is unlicensed. Feel free to use and modify it as needed.
+Text Optimizer (also referred to as SMS_Encoder) is licensed under a dual license model:
+
+Non-Commercial Use:Licensed under the MIT License for non-commercial use:
+MIT License
+Copyright (c) 2025 M Ghanam Sajjad
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+Commercial Use:If you intend to use Text Optimizer for commercial purposes (e.g., integrating it into a product or service that is sold or monetized), you must obtain a separate commercial license from the author. Please contact the author at ghanam4474@gmail.com to inquire about commercial licensing terms.
+
+Notes:
+
+Non-commercial use includes personal projects, academic use, or other non-profit activities.
+Commercial use includes any use in a product, service, or application that generates revenue or is part of a commercial offering.
+The author reserves the right to determine whether a specific use case qualifies as commercial or non-commercial.
+
+
+
 Contact
-For questions or support, contact the developer via [your preferred method, e.g., email or GitHub issues].
+For questions or support, contact the developer at ghanam4474@gmail.com or via GitHub issues (if hosted on GitHub).
