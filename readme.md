@@ -1,4 +1,5 @@
 Text Optimizer
+
 Text Optimizer is a web application that converts Unicode (UCS) characters to GSM-compatible characters in real-time. It features a sleek, dark-themed interface inspired by grok.com, with a centered layout including an input textarea with a Paste button and an output display with a Copy button. The app uses a Node.js backend with Express and Socket.IO for real-time text normalization.
 Features
 
