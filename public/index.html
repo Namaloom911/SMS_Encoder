@@ -1,110 +1,105 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Text Optimizer</title>
-  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.23.2/babel.min.js"></script>
-  <script src="https://cdn.socket.io/4.5.0/socket.io.min.js"></script>
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-  <div id="root"></div>
-  <script type="text/babel">
-    function TextOptimizer() {
-      const [inputText, setInputText] = React.useState('');
-      const [outputText, setOutputText] = React.useState('');
-      const [showCopied, setShowCopied] = React.useState(false);
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Text Optimizer</title>
+    <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.23.2/babel.min.js"></script>
+    <script src="https://cdn.socket.io/4.5.0/socket.io.min.js"></script>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+      function TextOptimizer() {
+        const [inputText, setInputText] = React.useState("");
+        const [outputText, setOutputText] = React.useState("");
+        const [showCopied, setShowCopied] = React.useState(false);
 
-      // Initialize Socket.IO client
-      const socket = React.useRef(null);
-      React.useEffect(() => {
-        socket.current = io('https://gsm7-af8eea1e8487.herokuapp.com/');
-        
-        socket.current.on('display', (normalizedText) => {
-          setOutputText(normalizedText);
-        });
+        // Initialize Socket.IO client
+        const socket = React.useRef(null);
+        React.useEffect(() => {
+          const serverUrl =
+            window.location.hostname === "localhost"
+              ? "http://localhost:3000"
+              : "https://gsm7-af8eea1e8487.herokuapp.com";
 
-        return () => {
-          socket.current.disconnect();
-        };
-      }, []);
+          socket.current = io(serverUrl);
 
-      // Handle input change and emit to server
-      const handleInputChange = (e) => {
-        const text = e.target.value;
-        setInputText(text);
-        socket.current.emit('typing', text);
-      };
+          socket.current.on("display", (normalizedText) => {
+            setOutputText(normalizedText);
+          });
 
-      // Handle paste from clipboard
-      const handlePaste = async () => {
-        try {
-          const text = await navigator.clipboard.readText();
+          return () => {
+            socket.current.disconnect();
+          };
+        }, []);
+
+        // Handle input change and emit to server
+        const handleInputChange = (e) => {
+          const text = e.target.value;
           setInputText(text);
-          socket.current.emit('typing', text);
-        } catch (err) {
-          console.error('Failed to paste:', err);
-        }
-      };
+          socket.current.emit("typing", text);
+        };
 
-      // Handle copy to clipboard
-      const handleCopy = async () => {
-        try {
-          await navigator.clipboard.writeText(outputText);
-          setShowCopied(true);
-          setTimeout(() => setShowCopied(false), 2000); // Hide after 2 seconds
-        } catch (err) {
-          console.error('Failed to copy:', err);
-        }
-      };
+        // Handle paste from clipboard
+        const handlePaste = async () => {
+          try {
+            const text = await navigator.clipboard.readText();
+            setInputText(text);
+            socket.current.emit("typing", text);
+          } catch (err) {
+            console.error("Failed to paste:", err);
+          }
+        };
 
-      return (
-        <div className="container">
-          <h1 className="title">Text Optimizer</h1>
-          
-          {/* Input Component */}
-          <div className="input-container">
-            <textarea
-              className="input-textarea"
-              placeholder="Enter or paste your text here..."
-              value={inputText}
-              onChange={handleInputChange}
-            />
-            <button
-              onClick={handlePaste}
-              className="paste-button"
-            >
-              Paste
-            </button>
-          </div>
+        // Handle copy to clipboard
+        const handleCopy = async () => {
+          try {
+            await navigator.clipboard.writeText(outputText);
+            setShowCopied(true);
+            setTimeout(() => setShowCopied(false), 2000); // Hide after 2 seconds
+          } catch (err) {
+            console.error("Failed to copy:", err);
+          }
+        };
 
-          {/* Output Component */}
-          <div className="output-container">
-            <div className="output-text">
-              {outputText || 'Converted text will appear here...'}
-            </div>
-            <div className="relative">
-              <button
-                onClick={handleCopy}
-                className="copy-button"
-              >
-                Copy
+        return (
+          <div className="container">
+            <h1 className="title">Text Optimizer</h1>
+
+            {/* Input Component */}
+            <div className="input-container">
+              <textarea
+                className="input-textarea"
+                placeholder="Enter or paste your text here..."
+                value={inputText}
+                onChange={handleInputChange}
+              />
+              <button onClick={handlePaste} className="paste-button">
+                Paste
               </button>
-              {showCopied && (
-                <span className="copied-message">
-                  Copied
-                </span>
-              )}
+            </div>
+
+            {/* Output Component */}
+            <div className="output-container">
+              <div className="output-text">
+                {outputText || "Converted text will appear here..."}
+              </div>
+              <div className="relative">
+                <button onClick={handleCopy} className="copy-button">
+                  Copy
+                </button>
+                {showCopied && <span className="copied-message">Copied</span>}
+              </div>
             </div>
           </div>
-        </div>
-      );
-    }
+        );
+      }
 
-    ReactDOM.render(<TextOptimizer />, document.getElementById('root'));
-  </script>
-</body>
+      ReactDOM.render(<TextOptimizer />, document.getElementById("root"));
+    </script>
+  </body>
 </html>
