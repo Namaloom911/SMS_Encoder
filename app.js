@@ -5,7 +5,7 @@ const io = require("socket.io")(http);
 app.use(express.static(__dirname + "/public"));
 const port = process.env.PORT || 3000;
 
-const emojiRegex = /[\p{Emoji}\uFE0F]/gu;
+const emojiRegex = /\p{Emoji_Presentation}|\p{Emoji}\uFE0F/gu;
 
 const replacements = {
   "–": "-", // En dash to regular dash
@@ -25,7 +25,6 @@ const replacements = {
   "«": "<<", // Left-pointing double angle quote to "<<"
   "»": ">>", // Right-pointing double angle quote to ">>"
   "•": "*", // Bullet to asterisk (GSM-7 compatible)
-  "‍": "", // Zero-width joiner to empty string (remove for GSM-7)
 };
 
 function containsEmoji(text) {
@@ -33,13 +32,12 @@ function containsEmoji(text) {
 }
 
 function removeEmojis(text) {
-  return text.replace(emojiRegex, "").replace(/\u200D/g, "");
+  return text.replace(emojiRegex, "");
 }
 
 function normalizeText(text) {
-  console.log("yes");
   return text.replace(
-    /[\u2013\u2014\u2212\u201C\u201D\u201E\u2018\u2019\u201A\u2026\u2032\u2033\u2039\u203A\u00AB\u00BB\u2022\u200D]/g,
+    /[\u2013\u2014\u2212\u201C\u201D\u201E\u2018\u2019\u201A\u2026\u2032\u2033\u2039\u203A\u00AB\u00BB\u2022]/g,
     (char) => {
       return replacements[char] || char;
     }
@@ -59,11 +57,11 @@ io.on("connection", (socket) => {
     let normalizedText = text;
     if (containsEmoji(text)) {
       console.log("Emoji detected in message:", text);
-      const clean = removeEmojis(text).trim();
+      const clean = removeEmojis(text);
       normalizedText = normalizeText(clean);
     } else {
       console.log("No emoji found. Skipping heavy processing.");
-      normalizedText = normalizeText(text).trim();
+      normalizedText = normalizeText(text);
     }
     io.to(userRoom).emit("display", normalizedText);
   });
